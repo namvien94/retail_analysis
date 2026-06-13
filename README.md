@@ -32,6 +32,8 @@ The analysis uses two retail tables:
 
 The two tables are joined using `CUSTOMER_ID`.
 
+Source: [Retail Analysis on Large Dataset](https://www.kaggle.com/datasets/sahilprajapati143/retail-analysis-large-dataset/data)
+
 ## Key Analysis Performed
 
 * Summary statistics for total customers, total revenue, average transaction amount, and transaction range
