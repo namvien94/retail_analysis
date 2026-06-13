@@ -178,6 +178,7 @@ WITH SEGMENT_REVENUE AS (
     FROM `workspace`.`default`.`retail_customers` customer
     JOIN `workspace`.`default`.`retail_transactions` transactions 
       ON customer.CUSTOMER_ID = transactions.CUSTOMER_ID
+   WHERE CUSTOMER_SEGMENT IS NOT NULL
    GROUP BY CUSTOMER_SEGMENT
 )
 SELECT CUSTOMER_SEGMENT,
