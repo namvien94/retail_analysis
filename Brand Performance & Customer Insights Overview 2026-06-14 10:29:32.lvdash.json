@@ -1,0 +1,1088 @@
+{
+  "datasets": [
+    {
+      "name": "b0dde02b",
+      "displayName": "retail_transactions",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.default.retail_transactions",
+        "dimensions": [
+          {
+            "name": "Transaction_ID",
+            "expr": "source.Transaction_ID",
+            "displayName": "Transaction ID"
+          },
+          {
+            "name": "Customer_ID",
+            "expr": "source.Customer_ID",
+            "displayName": "Customer ID"
+          },
+          {
+            "name": "Transaction_Date",
+            "expr": "source.Transaction_Date",
+            "displayName": "Transaction Date"
+          },
+          {
+            "name": "Total_Purchases",
+            "expr": "source.Total_Purchases",
+            "displayName": "Total Purchases"
+          },
+          {
+            "name": "Amount",
+            "expr": "source.Amount",
+            "displayName": "Amount"
+          },
+          {
+            "name": "Total_Amount",
+            "expr": "source.Total_Amount",
+            "displayName": "Total Amount"
+          },
+          {
+            "name": "Product_Category",
+            "expr": "source.Product_Category",
+            "displayName": "Product Category"
+          },
+          {
+            "name": "Product_Brand",
+            "expr": "source.Product_Brand",
+            "displayName": "Product Brand"
+          },
+          {
+            "name": "Product_Type",
+            "expr": "source.Product_Type",
+            "displayName": "Product Type"
+          },
+          {
+            "name": "Feedback",
+            "expr": "source.Feedback",
+            "displayName": "Feedback"
+          },
+          {
+            "name": "Shipping_Method",
+            "expr": "source.Shipping_Method",
+            "displayName": "Shipping Method"
+          },
+          {
+            "name": "Payment_Method",
+            "expr": "source.Payment_Method",
+            "displayName": "Payment Method"
+          },
+          {
+            "name": "Order_Status",
+            "expr": "source.Order_Status",
+            "displayName": "Order Status"
+          },
+          {
+            "name": "Ratings",
+            "expr": "source.Ratings",
+            "displayName": "Ratings"
+          },
+          {
+            "name": "products",
+            "expr": "source.products",
+            "displayName": "Products"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "57c67883",
+      "displayName": "retail_customers",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.default.retail_customers",
+        "dimensions": [
+          {
+            "name": "Customer_ID",
+            "expr": "source.Customer_ID",
+            "displayName": "Customer ID"
+          },
+          {
+            "name": "Name",
+            "expr": "source.Name",
+            "displayName": "Name"
+          },
+          {
+            "name": "Email",
+            "expr": "source.Email",
+            "displayName": "Email"
+          },
+          {
+            "name": "Phone",
+            "expr": "source.Phone",
+            "displayName": "Phone"
+          },
+          {
+            "name": "Address",
+            "expr": "source.Address",
+            "displayName": "Address"
+          },
+          {
+            "name": "City",
+            "expr": "source.City",
+            "displayName": "City"
+          },
+          {
+            "name": "State",
+            "expr": "source.State",
+            "displayName": "State"
+          },
+          {
+            "name": "Zipcode",
+            "expr": "source.Zipcode",
+            "displayName": "Zipcode"
+          },
+          {
+            "name": "Country",
+            "expr": "source.Country",
+            "displayName": "Country"
+          },
+          {
+            "name": "Age",
+            "expr": "source.Age",
+            "displayName": "Age"
+          },
+          {
+            "name": "Gender",
+            "expr": "source.Gender",
+            "displayName": "Gender"
+          },
+          {
+            "name": "Income",
+            "expr": "source.Income",
+            "displayName": "Income"
+          },
+          {
+            "name": "Customer_Segment",
+            "expr": "source.Customer_Segment",
+            "displayName": "Customer Segment"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "2a181d47",
+      "displayName": "Customer Purchase Summary Metrics Dataset",
+      "queryLines": [
+        "SELECT\n",
+        "  COUNT(DISTINCT CUSTOMER_ID) AS TOTAL_CUSTOMERS,\n",
+        "  SUM(TOTAL_AMOUNT) AS TOTAL_REVENUE,\n",
+        "  AVG(TOTAL_AMOUNT) AS AVG_TRANSACTION_AMT,\n",
+        "  MIN(TOTAL_AMOUNT) AS MIN_TRANSACTION_AMT,\n",
+        "  MAX(TOTAL_AMOUNT) AS MAX_TRANSACTION_AMT\n",
+        "FROM\n",
+        "  retail_transactions;"
+      ],
+      "catalog": "workspace",
+      "schema": "default"
+    },
+    {
+      "name": "23d58951",
+      "displayName": "Customer Demographics Grouped by Age Gender and Income",
+      "queryLines": [
+        "SELECT\n",
+        "  CASE\n",
+        "    WHEN customer.AGE BETWEEN 18 AND 24 THEN '18 - 24'\n",
+        "    WHEN AGE BETWEEN 25 AND 34 THEN '25 - 34'\n",
+        "    WHEN AGE BETWEEN 35 AND 44 THEN '35 - 44'\n",
+        "    WHEN AGE BETWEEN 45 AND 54 THEN '45 - 54'\n",
+        "    WHEN AGE BETWEEN 55 AND 64 THEN '55 - 64'\n",
+        "    WHEN AGE > 65 THEN '65+'\n",
+        "  END AS AGE_GROUP,\n",
+        "  customer.GENDER AS GENDER,\n",
+        "  customer.INCOME AS INCOME_LEVEL,\n",
+        "  COUNT(DISTINCT customer.CUSTOMER_ID) AS CUSTOMER_COUNT\n",
+        "FROM\n",
+        "  retail_customers customer\n",
+        "    JOIN retail_transactions transactions\n",
+        "      ON customer.CUSTOMER_ID = transactions.CUSTOMER_ID\n",
+        "WHERE customer.GENDER IS NOT NULL\n",
+        "  AND customer.AGE IS NOT NULL\n",
+        "  AND customer.INCOME IS NOT NULL\n",
+        "GROUP BY\n",
+        "  AGE_GROUP,\n",
+        "  GENDER,\n",
+        "  INCOME_LEVEL\n",
+        "HAVING AGE_GROUP IS NOT NULL;"
+      ]
+    },
+    {
+      "name": "2204f2c1",
+      "displayName": "Top Performing States by Revenue",
+      "queryLines": [
+        "SELECT\n",
+        "  customer.State AS STATE,\n",
+        "  ROUND(SUM(transactions.TOTAL_AMOUNT), 2) AS TOTAL_REVENUE,\n",
+        "  COUNT(DISTINCT customer.CUSTOMER_ID) AS CUSTOMER_COUNT,\n",
+        "  COUNT(transactions.TRANSACTION_ID) AS TRANSACTION_COUNT,\n",
+        "  ROUND(AVG(transactions.TOTAL_AMOUNT), 2) AS AVG_TRANSACTION_AMOUNT\n",
+        "FROM\n",
+        "  retail_customers customer\n",
+        "    JOIN retail_transactions transactions\n",
+        "      ON customer.CUSTOMER_ID = transactions.CUSTOMER_ID\n",
+        "WHERE\n",
+        "  customer.State IS NOT NULL\n",
+        "GROUP BY\n",
+        "  customer.State\n",
+        "ORDER BY\n",
+        "  TOTAL_REVENUE DESC"
+      ]
+    },
+    {
+      "name": "a9e31272",
+      "displayName": "Brand Revenue and Rating Insights Summary",
+      "queryLines": [
+        "SELECT\n",
+        "  PRODUCT_BRAND,\n",
+        "  ROUND(SUM(TOTAL_AMOUNT), 2) AS TOTAL_REVENUE,\n",
+        "  ROUND(AVG(RATINGS), 2) AS AVG_RATING,\n",
+        "  RANK() OVER (ORDER BY SUM(TOTAL_AMOUNT) DESC) AS REVENUE_RANK\n",
+        "FROM\n",
+        "  retail_transactions\n",
+        "WHERE\n",
+        "  PRODUCT_BRAND IS NOT NULL\n",
+        "GROUP BY\n",
+        "  PRODUCT_BRAND\n",
+        "ORDER BY\n",
+        "  REVENUE_RANK;"
+      ]
+    },
+    {
+      "name": "fb56d904",
+      "displayName": "Monthly Revenue Insights and Customer Trends",
+      "queryLines": [
+        "WITH MONTHLY_REVENUE_CUSTOMERS AS (\n",
+        "  SELECT\n",
+        "    EXTRACT(MONTH FROM TRANSACTION_DATE) AS TRANSACTION_MONTH,\n",
+        "    TO_CHAR(TRANSACTION_DATE, 'MMMM') AS TRANSACTION_MONTHNAME,\n",
+        "    ROUND(SUM(TOTAL_AMOUNT), 2) AS TOTAL_REVENUE,\n",
+        "    COUNT(DISTINCT CUSTOMER_ID) AS CUSTOMER_COUNT\n",
+        "  FROM\n",
+        "    retail_transactions\n",
+        "  WHERE\n",
+        "    TRANSACTION_DATE IS NOT NULL\n",
+        "  GROUP BY\n",
+        "    TRANSACTION_MONTH,\n",
+        "    TRANSACTION_MONTHNAME\n",
+        "  ORDER BY\n",
+        "    TRANSACTION_MONTH\n",
+        ")\n",
+        "SELECT\n",
+        "  TRANSACTION_MONTH,\n",
+        "  TRANSACTION_MONTHNAME,\n",
+        "  TOTAL_REVENUE,\n",
+        "  CUSTOMER_COUNT,\n",
+        "  ROUND(\n",
+        "    TOTAL_REVENUE - LAG(TOTAL_REVENUE) OVER (ORDER BY TRANSACTION_MONTH),\n",
+        "    2\n",
+        "  ) AS CHANGE_IN_REVENUE,\n",
+        "  CUSTOMER_COUNT - LAG(CUSTOMER_COUNT) OVER (ORDER BY TRANSACTION_MONTH) AS CHANGE_IN_CUSTOMER_COUNT\n",
+        "FROM\n",
+        "  MONTHLY_REVENUE_CUSTOMERS\n",
+        "ORDER BY\n",
+        "  TRANSACTION_MONTH;"
+      ]
+    },
+    {
+      "name": "b1980c2b",
+      "displayName": "Segment Performance Insights",
+      "queryLines": [
+        "WITH SEGMENT_REVENUE AS (\n",
+        "  SELECT\n",
+        "    CUSTOMER_SEGMENT,\n",
+        "    ROUND(SUM(TOTAL_AMOUNT), 2) AS TOTAL_REVENUE,\n",
+        "    ROUND(AVG(RATINGS), 2) AS AVG_RATING,\n",
+        "    COUNT(DISTINCT customer.CUSTOMER_ID) AS CUSTOMER_COUNT\n",
+        "  FROM\n",
+        "    retail_customers customer\n",
+        "      JOIN retail_transactions transactions\n",
+        "        ON customer.CUSTOMER_ID = transactions.CUSTOMER_ID\n",
+        "  WHERE\n",
+        "    CUSTOMER_SEGMENT IS NOT NULL\n",
+        "  GROUP BY\n",
+        "    CUSTOMER_SEGMENT\n",
+        ")\n",
+        "SELECT\n",
+        "  CUSTOMER_SEGMENT,\n",
+        "  TOTAL_REVENUE,\n",
+        "  AVG_RATING,\n",
+        "  ROUND(TOTAL_REVENUE / CUSTOMER_COUNT, 2) AS REVENUE_PER_CUSTOMER,\n",
+        "  ROUND(100 * TOTAL_REVENUE / SUM(TOTAL_REVENUE) OVER (), 2) AS REVENUE_SHARE_PCT,\n",
+        "  RANK() OVER (ORDER BY TOTAL_REVENUE DESC) AS REVENUE_RANK\n",
+        "FROM\n",
+        "  SEGMENT_REVENUE\n",
+        "ORDER BY\n",
+        "  REVENUE_RANK;"
+      ]
+    },
+    {
+      "name": "ratings_distribution",
+      "displayName": "Ratings Distribution by Brand",
+      "queryLines": [
+        "SELECT\n",
+        "  Product_Brand,\n",
+        "  Ratings,\n",
+        "  COUNT(*) AS Rating_Count\n",
+        "FROM\n",
+        "  retail_transactions\n",
+        "WHERE\n",
+        "  Product_Brand IS NOT NULL\n",
+        "  AND Ratings IS NOT NULL\n",
+        "GROUP BY\n",
+        "  Product_Brand,\n",
+        "  Ratings\n",
+        "ORDER BY\n",
+        "  Product_Brand,\n",
+        "  Ratings"
+      ],
+      "catalog": "workspace",
+      "schema": "default"
+    },
+    {
+      "name": "6fa060e7",
+      "displayName": "Monthly Retail Revenue and Growth by Product Category",
+      "queryLines": [
+        "WITH monthly_revenue AS (\n",
+        "  SELECT\n",
+        "    COALESCE(Product_Category, 'Unknown') AS Product_Category,\n",
+        "    SUM(\n",
+        "      CASE\n",
+        "        WHEN EXTRACT(MONTH FROM Transaction_Date) = 7 THEN Total_Amount\n",
+        "        ELSE 0\n",
+        "      END\n",
+        "    ) AS Total_Revenue_July,\n",
+        "    SUM(\n",
+        "      CASE\n",
+        "        WHEN EXTRACT(MONTH FROM Transaction_Date) = 8 THEN Total_Amount\n",
+        "        ELSE 0\n",
+        "      END\n",
+        "    ) AS Total_Revenue_August\n",
+        "  FROM\n",
+        "    workspace.default.retail_transactions\n",
+        "  GROUP BY\n",
+        "    Product_Category\n",
+        ")\n",
+        "SELECT\n",
+        "  Product_Category,\n",
+        "  Total_Revenue_July,\n",
+        "  Total_Revenue_August,\n",
+        "  Total_Revenue_August - Total_Revenue_July AS Revenue_Difference,\n",
+        "  SUM(Total_Revenue_August - Total_Revenue_July) OVER () AS Total_Revenue_Difference\n",
+        "FROM\n",
+        "  monthly_revenue\n",
+        "ORDER BY\n",
+        "  Revenue_Difference DESC"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "ecdbee2d",
+      "displayName": "Untitled page",
+      "layout": [
+        {
+          "widget": {
+            "name": "total_customers_counter",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "2a181d47",
+                  "fields": [
+                    {
+                      "name": "TOTAL_CUSTOMERS",
+                      "expression": "`TOTAL_CUSTOMERS`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Total Customers",
+                "showTitle": true,
+                "headerAlignment": "center"
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "TOTAL_CUSTOMERS",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 0
+                    }
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 3,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "total_revenue_counter",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "2a181d47",
+                  "fields": [
+                    {
+                      "name": "TOTAL_REVENUE",
+                      "expression": "`TOTAL_REVENUE`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Total Revenue",
+                "showTitle": true,
+                "headerAlignment": "center"
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "TOTAL_REVENUE",
+                  "style": {
+                    "rules": [
+                      {
+                        "condition": {
+                          "operator": ">="
+                        },
+                        "color": "#00A972"
+                      }
+                    ]
+                  },
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "USD",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 0
+                    }
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 4,
+            "width": 3,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "segment_performance_bar",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "b1980c2b",
+                  "fields": [
+                    {
+                      "name": "TOTAL_REVENUE",
+                      "expression": "`TOTAL_REVENUE`"
+                    },
+                    {
+                      "name": "CUSTOMER_SEGMENT",
+                      "expression": "`CUSTOMER_SEGMENT`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Revenue by Customer Segment",
+                "showTitle": true,
+                "showDescription": false
+              },
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "TOTAL_REVENUE",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "axis": {
+                    "title": "Total Revenue"
+                  },
+                  "displayName": "TOTAL REVENUE"
+                },
+                "color": {
+                  "fieldName": "CUSTOMER_SEGMENT",
+                  "legend": {
+                    "position": "bottom",
+                    "title": "Customer Segment",
+                    "hideTitle": true
+                  },
+                  "displayName": "CUSTOMER SEGMENT",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 1,
+            "width": 4,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "brand_performance_bar",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "a9e31272",
+                  "fields": [
+                    {
+                      "name": "TOTAL_REVENUE",
+                      "expression": "`TOTAL_REVENUE`"
+                    },
+                    {
+                      "name": "PRODUCT_BRAND",
+                      "expression": "`PRODUCT_BRAND`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Top Brands by Revenue",
+                "showTitle": true,
+                "showDescription": false
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "TOTAL_REVENUE",
+                  "axis": {
+                    "hideGrid": false,
+                    "title": "Total Revenue"
+                  },
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "USD",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  },
+                  "displayName": "TOTAL REVENUE",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "PRODUCT_BRAND",
+                  "displayName": "Brand",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  }
+                },
+                "label": {
+                  "show": false,
+                  "showTotal": true
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 13,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "demographics_table",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "23d58951",
+                  "fields": [
+                    {
+                      "name": "GENDER",
+                      "expression": "`GENDER`"
+                    },
+                    {
+                      "name": "sum(CUSTOMER_COUNT)",
+                      "expression": "SUM(`CUSTOMER_COUNT`)"
+                    },
+                    {
+                      "name": "AGE_GROUP",
+                      "expression": "`AGE_GROUP`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Customer Demographics",
+                "showTitle": true
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "sum(CUSTOMER_COUNT)",
+                  "displayName": "Customer Count",
+                  "scale": {
+                    "type": "quantitative",
+                    "domain": {
+                      "max": 12000
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "AGE_GROUP",
+                  "displayName": "Age Group",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "color": {
+                  "fieldName": "GENDER",
+                  "displayName": "Gender",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "label": {
+                  "show": true,
+                  "showTotal": false
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 7,
+            "y": 1,
+            "width": 5,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "556b9551",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ratings_distribution",
+                  "fields": [
+                    {
+                      "name": "Ratings",
+                      "expression": "`Ratings`"
+                    },
+                    {
+                      "name": "Rating_Count",
+                      "expression": "`Rating_Count`"
+                    },
+                    {
+                      "name": "Product_Brand",
+                      "expression": "`Product_Brand`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Product Ratings Distribution by Brand",
+                "showTitle": true
+              },
+              "mark": {
+                "layout": "percent-stack"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "Rating_Count",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 0
+                    }
+                  },
+                  "axis": {
+                    "title": "Percentage of Rating"
+                  },
+                  "displayName": "NUMBER OF RATINGS",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "Product_Brand",
+                  "axis": {
+                    "title": "Brand"
+                  },
+                  "displayName": "BRAND",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "custom-order",
+                      "orderedValues": [
+                        "Pepsi",
+                        "Nike",
+                        "Sony",
+                        "Zara",
+                        "HarperCollins",
+                        "Random House",
+                        "Samsung",
+                        "Home Depot",
+                        "Apple",
+                        "Penguin Books",
+                        "Adidas",
+                        "Coca-Cola",
+                        "Nestle",
+                        "IKEA",
+                        "Bed Bath & Beyond",
+                        "Whirepool"
+                      ]
+                    }
+                  }
+                },
+                "color": {
+                  "fieldName": "Ratings",
+                  "legend": {
+                    "position": "right"
+                  },
+                  "displayName": "Rating",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 13,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "98f0ebbc",
+            "multilineTextboxSpec": {
+              "lines": [
+                "<span style=\"font-size: 24px;\">**Brand Performance & Customer Insights Overview**</span>"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "9311bfd8",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "fb56d904",
+                  "fields": [
+                    {
+                      "name": "TRANSACTION_MONTHNAME",
+                      "expression": "`TRANSACTION_MONTHNAME`"
+                    },
+                    {
+                      "name": "CHANGE_IN_REVENUE",
+                      "expression": "`CHANGE_IN_REVENUE`"
+                    },
+                    {
+                      "name": "CHANGE_IN_CUSTOMER_COUNT",
+                      "expression": "`CHANGE_IN_CUSTOMER_COUNT`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Monthly Revenue & Customer Growth Trends",
+                "showTitle": true
+              },
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "TRANSACTION_MONTHNAME",
+                  "displayName": "Month",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "custom-order",
+                      "orderedValues": [
+                        "January",
+                        "February",
+                        "March",
+                        "April",
+                        "May",
+                        "June",
+                        "July",
+                        "August",
+                        "September",
+                        "October",
+                        "November",
+                        "December"
+                      ]
+                    }
+                  }
+                },
+                "y": {
+                  "primary": {
+                    "fields": [
+                      {
+                        "fieldName": "CHANGE_IN_REVENUE",
+                        "displayName": "Revenue Change"
+                      }
+                    ],
+                    "scale": {
+                      "type": "quantitative"
+                    },
+                    "format": {
+                      "type": "number-plain",
+                      "abbreviation": "compact",
+                      "decimalPlaces": {
+                        "type": "max",
+                        "places": 2
+                      },
+                      "hideGroupSeparator": false
+                    },
+                    "axis": {
+                      "hideLabels": false
+                    }
+                  },
+                  "secondary": {
+                    "fields": [
+                      {
+                        "fieldName": "CHANGE_IN_CUSTOMER_COUNT",
+                        "displayName": "Customer Count"
+                      }
+                    ],
+                    "scale": {
+                      "type": "quantitative"
+                    }
+                  }
+                },
+                "color": {
+                  "legend": {
+                    "position": "bottom",
+                    "hideTitle": false
+                  }
+                },
+                "label": {
+                  "show": false
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 7,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "0cb4cea0",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "6fa060e7",
+                  "fields": [
+                    {
+                      "name": "Revenue_Difference",
+                      "expression": "`Revenue_Difference`"
+                    },
+                    {
+                      "name": "Product_Category",
+                      "expression": "`Product_Category`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Revenue Growth by Product Category (July - Aug)",
+                "showTitle": true
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "Revenue_Difference",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "USD",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 0
+                    }
+                  },
+                  "axis": {
+                    "title": "Revenue Change (July - August)"
+                  },
+                  "displayName": "Revenue Change",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "Product_Category",
+                  "axis": {
+                    "hideTitle": true
+                  },
+                  "displayName": "Product Category",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 7,
+            "width": 6,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "canvasBackgroundColor": {
+        "light": "#FAFAFB",
+        "dark": "#1F272D"
+      },
+      "widgetBackgroundColor": {
+        "light": "#FFFFFF",
+        "dark": "#11171C"
+      },
+      "fontColor": {
+        "light": "#11171C",
+        "dark": "#E8ECF0"
+      },
+      "selectionColor": {
+        "light": "#2272B4",
+        "dark": "#8ACAFF"
+      },
+      "widgetHeaderAlignment": "LEFT",
+      "fontSettings": {
+        "base": {
+          "fontSize": 15
+        }
+      }
+    },
+    "applyModeEnabled": false
+  }
+}
